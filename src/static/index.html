@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT Face Recognition Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-eye"></i>
+                    <h1>OSINT Face Recognition Simulator</h1>
+                </div>
+                <div class="warning-badge">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Educational Purpose Only
+                </div>
+            </div>
+            <p class="subtitle">Demonstrating privacy risks through facial recognition and public data correlation</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <div class="upload-methods">
+                    <div class="upload-method" id="file-upload-method">
+                        <div class="method-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3>Upload Image</h3>
+                        <p>Select a photo from your device</p>
+                        <input type="file" id="file-input" accept="image/*" style="display: none;">
+                        <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                            Choose File
+                        </button>
+                    </div>
+
+                    <div class="upload-method" id="webcam-method">
+                        <div class="method-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>Use Webcam</h3>
+                        <p>Take a photo using your camera</p>
+                        <button class="btn btn-secondary" id="webcam-btn">
+                            Start Camera
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Webcam Interface -->
+                <div class="webcam-interface" id="webcam-interface" style="display: none;">
+                    <div class="webcam-container">
+                        <video id="webcam-video" autoplay playsinline></video>
+                        <canvas id="webcam-canvas" style="display: none;"></canvas>
+                        <div class="webcam-controls">
+                            <button class="btn btn-success" id="capture-btn">
+                                <i class="fas fa-camera"></i> Capture
+                            </button>
+                            <button class="btn btn-danger" id="stop-webcam-btn">
+                                <i class="fas fa-stop"></i> Stop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="preview-section" id="preview-section" style="display: none;">
+                    <h3>Uploaded Image</h3>
+                    <div class="image-preview">
+                        <img id="preview-image" alt="Uploaded image">
+                        <div class="preview-actions">
+                            <button class="btn btn-primary" id="analyze-btn">
+                                <i class="fas fa-search"></i> Analyze Face
+                            </button>
+                            <button class="btn btn-secondary" id="clear-btn">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Section -->
+            <section class="loading-section" id="loading-section" style="display: none;">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Analyzing facial features and searching databases...</p>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="results-section" style="display: none;">
+                <div class="threat-level-indicator">
+                    <h3>Privacy Threat Level</h3>
+                    <div class="threat-meter">
+                        <div class="threat-bar" id="threat-bar"></div>
+                        <span class="threat-label" id="threat-label">LOW</span>
+                    </div>
+                    <div class="confidence-score" id="confidence-score" style="display: none;">
+                        <span>Confidence: <strong id="confidence-value">0%</strong></span>
+                    </div>
+                </div>
+
+                <!-- Gemini Enhanced Analysis -->
+                <div class="gemini-analysis" id="gemini-analysis" style="display: none;">
+                    <div class="analysis-header">
+                        <h3><i class="fas fa-brain"></i> AI-Enhanced Analysis</h3>
+                        <span class="gemini-badge">Powered by Gemini</span>
+                    </div>
+                    
+                    <div class="gemini-tabs">
+                        <button class="tab-btn active" onclick="showGeminiTab('face-analysis')">Face Analysis</button>
+                        <button class="tab-btn" onclick="showGeminiTab('osint-insights')">OSINT Insights</button>
+                        <button class="tab-btn" onclick="showGeminiTab('threat-assessment')">Threat Assessment</button>
+                    </div>
+                    
+                    <div class="gemini-content">
+                        <div class="tab-content active" id="face-analysis-tab">
+                            <div class="analysis-card">
+                                <h4>Facial Attributes</h4>
+                                <div id="facial-attributes"></div>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Image Context</h4>
+                                <div id="image-context"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="osint-insights-tab">
+                            <div class="analysis-card">
+                                <h4>Search Strategy</h4>
+                                <div id="search-strategy"></div>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Potential Indicators</h4>
+                                <div id="potential-indicators"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="threat-assessment-tab">
+                            <div class="analysis-card">
+                                <h4>Risk Factors</h4>
+                                <div id="risk-factors"></div>
+                            </div>
+                            <div class="analysis-card">
+                                <h4>Privacy Recommendations</h4>
+                                <div id="privacy-recommendations"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <!-- Face Matches -->
+                    <div class="result-card">
+                        <h4><i class="fas fa-users"></i> Face Matches</h4>
+                        <div class="matches-container" id="matches-container">
+                            <!-- Matches will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- OSINT Results -->
+                    <div class="result-card">
+                        <h4><i class="fas fa-globe"></i> Public Data Found</h4>
+                        <div class="osint-container" id="osint-container">
+                            <!-- OSINT results will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-summary">
+                    <h4>Analysis Summary</h4>
+                    <div class="summary-content" id="summary-content">
+                        <!-- Summary will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Panel -->
+            <section class="settings-panel">
+                <div class="settings-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="osint-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span>Enable OSINT Lookup</span>
+                </div>
+                <div class="settings-info">
+                    <p><i class="fas fa-info-circle"></i> When enabled, the system will attempt to find public profiles and data associated with detected faces.</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="disclaimer">
+                    <h4>⚠️ Important Disclaimer</h4>
+                    <p>This application is designed for educational and awareness purposes only. It demonstrates potential privacy risks associated with facial recognition technology and public data correlation. Do not use this tool for unauthorized surveillance or identification of individuals without their consent.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" onclick="showInfo()">How It Works</a>
+                    <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                    <a href="#" onclick="showAbout()">About</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal for Information -->
+    <div class="modal" id="info-modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body">
+                <!-- Modal content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
